@@ -88,9 +88,45 @@ iframe{
 
         const iframe = document.createElement("iframe");
 
-        iframe.onload = function(){
-          document.body.style.overflow = "hidden";
-        };
+       iframe.onload = function(){
+  document.body.style.overflow = "hidden";
+
+  const d = iframe.contentDocument;
+
+  const botones = d.querySelectorAll(
+    "#filters button, .category-pills button"
+  );
+
+  botones.forEach(function(boton){
+
+    boton.addEventListener("click", function(){
+
+      const categoria = boton.getAttribute("data-filter");
+
+      d.querySelectorAll(".card").forEach(function(card){
+
+        if(categoria === "all"){
+          card.style.display = "";
+        }else{
+          card.style.display =
+            card.getAttribute("data-cat") === categoria
+            ? ""
+            : "none";
+        }
+
+      });
+
+      botones.forEach(function(b){
+        b.classList.remove("active");
+      });
+
+      boton.classList.add("active");
+
+    });
+
+  });
+
+};
 
         document.body.innerHTML = "";
         document.body.appendChild(iframe);
