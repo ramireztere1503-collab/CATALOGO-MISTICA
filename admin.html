@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MÍSTICA - Administrador</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#090909;
+  color:white;
+}
+
+header{
+  background:#111;
+  padding:22px 30px;
+  border-bottom:1px solid #333;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:28px;
+  font-weight:bold;
+  letter-spacing:3px;
+}
+
+.logo span{
+  color:#f22;
+}
+
+.login{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:#151515;
+  padding:35px;
+  border-radius:18px;
+  border:1px solid #333;
+  box-shadow:0 15px 50px #000;
+}
+
+.login-box h1{
+  text-align:center;
+  margin-top:0;
+}
+
+.login-box p{
+  text-align:center;
+  color:#aaa;
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  margin:8px 0 16px;
+  border-radius:10px;
+  border:1px solid #444;
+  background:#222;
+  color:white;
+  font-size:16px;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:13px 18px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.btn-red{
+  background:#f22;
+  color:white;
+  width:100%;
+}
+
+.admin{
+  display:none;
+}
+
+.layout{
+  display:flex;
+  min-height:calc(100vh - 75px);
+}
+
+.sidebar{
+  width:240px;
+  background:#111;
+  padding:20px;
+  border-right:1px solid #333;
+}
+
+.sidebar button{
+  width:100%;
+  margin-bottom:10px;
+  background:#202020;
+  color:white;
+  text-align:left;
+}
+
+.sidebar button:hover{
+  background:#f22;
+}
+
+.content{
+  flex:1;
+  padding:30px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+}
+
+.box{
+  background:#171717;
+  border:1px solid #333;
+  border-radius:15px;
+  padding:25px;
+}
+
+.box strong{
+  display:block;
+  font-size:30px;
+  margin-top:10px;
+}
+
+.product-form{
+  max-width:700px;
+  background:#151515;
+  padding:25px;
+  border-radius:15px;
+  border:1px solid #333;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.hidden{
+  display:none;
+}
+
+.logout{
+  background:#333;
+  color:white;
+}
+
+@media(max-width:700px){
+  .layout{
+    display:block;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    gap:8px;
+    overflow:auto;
+  }
+
+  .sidebar button{
+    min-width:150px;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  .content{
+    padding:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="login" class="login">
+
+  <div class="login-box">
+
+    <div class="logo" style="text-align:center">
+      MÍSTICA<span>.</span>
+    </div>
+
+    <h1>Administrador</h1>
+
+    <p>Panel de gestión de productos</p>
+
+    <label>Usuario</label>
+    <input id="usuario" type="text" placeholder="Usuario">
+
+    <label>Contraseña</label>
+    <input id="password" type="password" placeholder="Contraseña">
+
+    <button class="btn-red" onclick="entrar()">
+      INGRESAR
+    </button>
+
+    <p id="error" style="color:#f22"></p>
+
+  </div>
+
+</div>
+
+
+<div id="admin" class="admin">
+
+  <header>
+
+    <div class="logo">
+      MÍSTICA<span>.</span>
+    </div>
+
+    <button class="logout" onclick="salir()">
+      CERRAR SESIÓN
+    </button>
+
+  </header>
+
+
+  <div class="layout">
+
+    <aside class="sidebar">
+
+      <button onclick="mostrar('inicio')">
+        🏠 Inicio
+      </button>
+
+      <button onclick="mostrar('productos')">
+        📦 Productos
+      </button>
+
+      <button onclick="mostrar('nuevo')">
+        ➕ Agregar producto
+      </button>
+
+      <button onclick="mostrar('pedidos')">
+        🛒 Pedidos
+      </button>
+
+      <button onclick="mostrar('configuracion')">
+        ⚙️ Configuración
+      </button>
+
+    </aside>
+
+
+    <main class="content">
+
+      <section id="inicio">
+
+        <h1>Panel de Administración</h1>
+
+        <p style="color:#aaa">
+          Bienvenida al administrador de MÍSTICA.
+        </p>
+
+        <div class="dashboard">
+
+          <div class="box">
+            Productos
+            <strong>12</strong>
+          </div>
+
+          <div class="box">
+            Categorías
+            <strong>4</strong>
+          </div>
+
+          <div class="box">
+            Pedidos
+            <strong>0</strong>
+          </div>
+
+          <div class="box">
+            Estado
+            <strong style="color:#2f2">Activo</strong>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section id="productos" class="hidden">
+
+        <h1>📦 Productos</h1>
+
+        <div class="box">
+
+          <h2>Catálogo MÍSTICA</h2>
+
+          <p style="color:#aaa">
+            Desde acá vamos a poder administrar todos los productos.
+          </p>
+
+          <button class="btn-red"
+                  onclick="mostrar('nuevo')">
+            ➕ AGREGAR PRODUCTO
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <section id="nuevo" class="hidden">
+
+        <h1>➕ Nuevo producto</h1>
+
+        <div class="product-form">
+
+          <label>Nombre del producto</label>
+          <input id="nombre" placeholder="Ej: Short Mística Boxing">
+
+          <div class="row">
+
+            <div>
+              <label>Precio</label>
+              <input id="precio" placeholder="$">
+            </div>
+
+            <div>
+              <label>Categoría</label>
+
+              <select id="categoria">
+
+                <option>Mística Gym</option>
+                <option>Mística Boxing</option>
+                <option>Seguridad Personal</option>
+                <option>Accesorios</option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <label>Foto del producto</label>
+          <input type="file" accept="image/*">
+
+
+          <label>Talles</label>
+          <input placeholder="Ej: S, M, L, XL">
+
+
+          <label>Colores</label>
+          <input placeholder="Ej: Negro, Rojo, Blanco">
+
+
+          <button class="btn-red"
+                  onclick="guardarProducto()">
+            GUARDAR PRODUCTO
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <section id="pedidos" class="hidden">
+
+        <h1>🛒 Pedidos</h1>
+
+        <div class="box">
+
+          <h2>Pedidos recibidos</h2>
+
+          <p style="color:#aaa">
+            Acá vamos a mostrar los pedidos realizados por los clientes.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <section id="configuracion" class="hidden">
+
+        <h1>⚙️ Configuración</h1>
+
+        <div class="box">
+
+          <h2>Datos de MÍSTICA</h2>
+
+          <label>Nombre</label>
+          <input value="MÍSTICA">
+
+          <label>WhatsApp</label>
+          <input value="1153768206">
+
+          <button class="btn-red">
+            GUARDAR CAMBIOS
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
+
+
+<script>
+
+function entrar(){
+
+  const usuario =
+    document.getElementById("usuario").value;
+
+  const password =
+    document.getElementById("password").value;
+
+  /*
+    Acceso PROVISORIO para esta primera versión.
+    Después lo reemplazaremos por autenticación
+    segura conectada a una base de datos.
+  */
+
+  if(usuario === "mistica" && password === "admin"){
+
+    document.getElementById("login").style.display="none";
+    document.getElementById("admin").style.display="block";
+
+  }else{
+
+    document.getElementById("error").textContent =
+      "Usuario o contraseña incorrectos.";
+
+  }
+
+}
+
+
+function salir(){
+
+  document.getElementById("admin").style.display="none";
+  document.getElementById("login").style.display="flex";
+
+}
+
+
+function mostrar(id){
+
+  const secciones = [
+    "inicio",
+    "productos",
+    "nuevo",
+    "pedidos",
+    "configuracion"
+  ];
+
+  secciones.forEach(function(seccion){
+
+    document.getElementById(seccion)
+      .classList.add("hidden");
+
+  });
+
+  document.getElementById(id)
+    .classList.remove("hidden");
+
+}
+
+
+function guardarProducto(){
+
+  alert(
+    "Producto preparado. En la próxima etapa conectaremos el administrador con la base de datos."
+  );
+
+}
+
+</script>
+
+</body>
+</html>
