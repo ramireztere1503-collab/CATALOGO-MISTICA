@@ -4,56 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MÍSTICA</title>
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+iframe{
+  width:100%;
+  height:100%;
+  border:0;
+}
+#cargando{
+  font-family:Arial,sans-serif;
+  text-align:center;
+  padding:50px;
+}
+</style>
 </head>
 
-<body style="font-family:Arial;text-align:center;padding:40px">
+<body>
 
-<h1>MÍSTICA</h1>
-<p id="estado">Cargando catálogo...</p>
+<div id="cargando">Cargando MÍSTICA...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 
 <script>
-(async function() {
-  try {
-    const url = "https://raw.githubusercontent.com/ramireztere1503-collab/CATALOGO-MISTICA/main/MISTICA_CATALOGO_PUBLICO_CARRITO_WHATSAPP.zip";
+(async function(){
 
-    const respuesta = await fetch(url);
+  try {
+
+    const url =
+    "https://raw.githubusercontent.com/ramireztere1503-collab/CATALOGO-MISTICA/main/MISTICA_CATALOGO_PUBLICO_CARRITO_WHATSAPP.zip";
+
+    const respuesta = await fetch(url, {
+      cache: "no-store"
+    });
 
     if (!respuesta.ok) {
-      throw new Error("No se pudo cargar el catálogo");
+      throw new Error("No se pudo cargar el catálogo.");
     }
 
     const archivo = new Uint8Array(
       await respuesta.arrayBuffer()
     );
 
-    fflate.unzip(archivo, function(error, archivos) {
-      if (error) {
-        document.getElementById("estado").innerHTML =
-          "<h2>Error al abrir el catálogo</h2>";
+    fflate.unzip(archivo, function(error, archivos){
+
+      if(error){
+        document.getElementById("cargando").innerHTML =
+          "No se pudo abrir el catálogo.";
         return;
       }
 
       const html = archivos["index.html"];
 
-      if (!html) {
-        document.getElementById("estado").innerHTML =
-          "<h2>No se encontró el catálogo</h2>";
+      if(!html){
+        document.getElementById("cargando").innerHTML =
+          "No se encontró el catálogo.";
         return;
       }
 
-      document.open();
-      document.write(new TextDecoder().decode(html));
-      document.close();
+      const blob = new Blob(
+        [html],
+        {type:"text/html"}
+      );
+
+      const urlHTML =
+        URL.createObjectURL(blob);
+
+      const iframe =
+        document.createElement("iframe");
+
+      iframe.src = urlHTML;
+
+      document.body.innerHTML = "";
+
+      document.body.appendChild(iframe);
+
     });
 
-  } catch (error) {
-    document.getElementById("estado").innerHTML =
+  } catch(error) {
+
+    document.getElementById("cargando").innerHTML =
       "<h2>No se pudo cargar MÍSTICA</h2><p>" +
       error.message +
       "</p>";
+
   }
+
 })();
 </script>
 
