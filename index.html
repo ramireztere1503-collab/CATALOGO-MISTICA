@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MÍSTICA</title>
+</head>
 
+<body style="font-family:Arial;text-align:center;padding:40px">
+
+<h1>MÍSTICA</h1>
+<p id="estado">Cargando catálogo...</p>
+
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+
+<script>
+(async function() {
+  try {
+    const url = "https://raw.githubusercontent.com/ramireztere1503-collab/CATALOGO-MISTICA/main/MISTICA_CATALOGO_PUBLICO_CARRITO_WHATSAPP.zip";
+
+    const respuesta = await fetch(url);
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo cargar el catálogo");
+    }
+
+    const archivo = new Uint8Array(
+      await respuesta.arrayBuffer()
+    );
+
+    fflate.unzip(archivo, function(error, archivos) {
+      if (error) {
+        document.getElementById("estado").innerHTML =
+          "<h2>Error al abrir el catálogo</h2>";
+        return;
+      }
+
+      const html = archivos["index.html"];
+
+      if (!html) {
+        document.getElementById("estado").innerHTML =
+          "<h2>No se encontró el catálogo</h2>";
+        return;
+      }
+
+      document.open();
+      document.write(new TextDecoder().decode(html));
+      document.close();
+    });
+
+  } catch (error) {
+    document.getElementById("estado").innerHTML =
+      "<h2>No se pudo cargar MÍSTICA</h2><p>" +
+      error.message +
+      "</p>";
+  }
+})();
+</script>
+
+</body>
+</html>
