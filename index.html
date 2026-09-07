@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MÍSTICA</title>
+
 <style>
 html,body{
   margin:0;
@@ -11,16 +12,17 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
+  font-family:Arial,sans-serif;
+}
+#cargando{
+  text-align:center;
+  padding:60px 20px;
+  font-size:20px;
 }
 iframe{
   width:100%;
   height:100%;
   border:0;
-}
-#cargando{
-  font-family:Arial,sans-serif;
-  text-align:center;
-  padding:50px;
 }
 </style>
 </head>
@@ -34,112 +36,87 @@ iframe{
 <script>
 (async function(){
 
+  const mensaje = document.getElementById("cargando");
+
   try {
 
-    const url =
-    "https://raw.githubusercontent.com/ramireztere1503-collab/CATALOGO-MISTICA/main/MISTICA_CATALOGO_PUBLICO_CARRITO_WHATSAPP.zip";
+    mensaje.innerHTML = "Conectando con MÍSTICA...";
 
-    const respuesta = await fetch(url, {
-      cache: "no-store"
-    });
-
-    if (!respuesta.ok) {
-      throw new Error("No se pudo cargar el catálogo.");
+    if(typeof fflate === "undefined"){
+      throw new Error("No se pudo cargar el sistema de archivos.");
     }
 
-    const archivo = new Uint8Array(
+    const url =
+      "https://raw.githubusercontent.com/ramireztere1503-collab/CATALOGO-MISTICA/main/MISTICA_CATALOGO_PUBLICO_CARRITO_WHATSAPP.zip";
+
+    mensaje.innerHTML = "Descargando catálogo...";
+
+    const respuesta = await fetch(url, {cache:"no-store"});
+
+    if(!respuesta.ok){
+      throw new Error("No se pudo descargar el catálogo. Código: " + respuesta.status);
+    }
+
+    const datos = new Uint8Array(
       await respuesta.arrayBuffer()
     );
 
-    fflate.unzip(archivo, function(error, archivos){
+    mensaje.innerHTML = "Preparando catálogo...";
 
-      if(error){
-        document.getElementById("cargando").innerHTML =
-          "No se pudo abrir el catálogo.";
-        return;
-      }
+    fflate.unzip(datos, function(error, archivos){
 
-      const html = archivos["index.html"];
+      try {
 
-      if(!html){
-        document.getElementById("cargando").innerHTML =
-          "No se encontró el catálogo.";
-        return;
-      }
+        if(error){
+          throw new Error("No se pudo abrir el archivo del catálogo.");
+        }
 
-      const blob = new Blob(
-        [html],
-        {type:"text/html"}
-      );
+        const archivo = archivos["index.html"];
 
-      const urlHTML =
-        URL.createObjectURL(blob);
+        if(!archivo){
+          throw new Error("El catálogo no contiene index.html.");
+        }
 
-      const iframe =
-        document.createElement("iframe");
+        const html = new TextDecoder().decode(archivo);
 
-      
-
-      document.body.innerHTML = "";
-
-     
-  iframe.onload = function() {
-  const d = iframe.contentDocument;
-
-  function filtrar(categoria) {
-    d.querySelectorAll('.card').forEach(function(card) {
-      card.style.display =
-        categoria === 'all' || card.dataset.cat === categoria
-          ? 'block'
-          : 'none';
-    });
-
-    d.querySelectorAll('#filters button, .category-pills button')
-      .forEach(function(btn) {
-        btn.classList.toggle(
-          'active',
-          btn.dataset.filter === categoria ||
-          btn.textContent.trim().toLowerCase() ===
-          ({
-            all: 'todos',
-            gym: 'mística gym',
-            boxing: 'mística boxing',
-            seguridad: 'seguridad personal',
-            accesorios: 'accesorios'
-          }[categoria] || '')
+        const blob = new Blob(
+          [html],
+          {type:"text/html"}
         );
-      });
-  }
 
-  const botones = d.querySelectorAll(
-    '.category-pills button, #filters button'
-  );
+        const direccion = URL.createObjectURL(blob);
 
-  botones.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const texto = btn.textContent.trim().toLowerCase();
+        const iframe = document.createElement("iframe");
 
-      let categoria = 'all';
+        iframe.onload = function(){
+          document.body.style.overflow = "hidden";
+        };
 
-      if (texto === 'mística gym') categoria = 'gym';
-      if (texto === 'mística boxing') categoria = 'boxing';
-      if (texto === 'seguridad personal') categoria = 'seguridad';
-      if (texto === 'accesorios') categoria = 'accesorios';
+        document.body.innerHTML = "";
+        document.body.appendChild(iframe);
 
-      filtrar(categoria);
+        iframe.src = direccion;
+
+      } catch(e){
+
+        document.body.innerHTML =
+          "<div id='cargando'>" +
+          "<h2>No se pudo cargar MÍSTICA</h2>" +
+          "<p>" + e.message + "</p>" +
+          "</div>";
+
+      }
+
     });
-  });
-};
-iframe.src = urHTML;
-document.body.appendChild(iframe);
-    });
 
-  } catch(error) {
+  } catch(e){
 
-    document.getElementById("cargando").innerHTML =
-      "<h2>No se pudo cargar MÍSTICA</h2><p>" +
-      error.message +
-      "</p>";
+    document.body.innerHTML =
+      "<div id='cargando'>" +
+      "<h2>No se pudo cargar MÍSTICA</h2>" +
+      "<p>" + e.message + "</p>" +
+      "<p>Revisá que el archivo del catálogo esté en GitHub.</p>" +
+      "</div>";
 
   }
 
