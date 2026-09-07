@@ -186,7 +186,18 @@ button{
     padding:18px;
   }
 }
-</style>
+</style
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://vwkwvksiytevvboitfnh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_4bgS5G3AnYAeTGylhYfNZQ__eZkx-j9";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+</script>
 </head>
 
 <body>
@@ -355,15 +366,15 @@ button{
 
 
           <label>Foto del producto</label>
-          <input type="file" accept="image/*">
+          <input type="foto" accept="image/*">
 
 
           <label>Talles</label>
-          <input placeholder="Ej: S, M, L, XL">
+          <input id="talles" placeholder="Ej: S, M, L, XL">
 
 
           <label>Colores</label>
-          <input placeholder="Ej: Negro, Rojo, Blanco">
+       <input id="colores" placeholder="Ej: Negro, Rojo, Blanco">
 
 
           <button class="btn-red"
