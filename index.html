@@ -78,12 +78,60 @@ iframe{
       const iframe =
         document.createElement("iframe");
 
-      iframe.src = urlHTML;
+      
 
       document.body.innerHTML = "";
 
-      document.body.appendChild(iframe);
+     
+  iframe.onload = function() {
+  const d = iframe.contentDocument;
 
+  function filtrar(categoria) {
+    d.querySelectorAll('.card').forEach(function(card) {
+      card.style.display =
+        categoria === 'all' || card.dataset.cat === categoria
+          ? 'block'
+          : 'none';
+    });
+
+    d.querySelectorAll('#filters button, .category-pills button')
+      .forEach(function(btn) {
+        btn.classList.toggle(
+          'active',
+          btn.dataset.filter === categoria ||
+          btn.textContent.trim().toLowerCase() ===
+          ({
+            all: 'todos',
+            gym: 'mística gym',
+            boxing: 'mística boxing',
+            seguridad: 'seguridad personal',
+            accesorios: 'accesorios'
+          }[categoria] || '')
+        );
+      });
+  }
+
+  const botones = d.querySelectorAll(
+    '.category-pills button, #filters button'
+  );
+
+  botones.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const texto = btn.textContent.trim().toLowerCase();
+
+      let categoria = 'all';
+
+      if (texto === 'mística gym') categoria = 'gym';
+      if (texto === 'mística boxing') categoria = 'boxing';
+      if (texto === 'seguridad personal') categoria = 'seguridad';
+      if (texto === 'accesorios') categoria = 'accesorios';
+
+      filtrar(categoria);
+    });
+  });
+};
+iframe.src = urHTML;
+document.body.appendChild(iframe);
     });
 
   } catch(error) {
