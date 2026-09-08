@@ -435,7 +435,25 @@ const supabaseClient = window.supabase.createClient(
 
 <script>
 
-function entrar(){
+async function entrar(){
+
+  const email = document.getElementById("usuario").value;
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if(error){
+    document.getElementById("error").textContent =
+      "Usuario o contraseña incorrectos.";
+    return;
+  }
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("admin").style.display = "block";
+}
 
   const usuario =
     document.getElementById("usuario").value;
