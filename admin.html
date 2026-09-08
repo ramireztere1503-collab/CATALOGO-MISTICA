@@ -448,7 +448,7 @@ async function entrar(){
 
   if(error){
     document.getElementById("error").textContent =
-      "Usuario o contraseña incorrectos.";
+      error.message;
     return;
   }
 
